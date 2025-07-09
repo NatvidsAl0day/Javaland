@@ -43,7 +43,7 @@ const EditTours = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`https://javaland-api.vercel.app/v1/tours/${id}`, tour);
+            await axios.put(`https://javaland-api.vercel.app/api/v1/tours/${id}`, tour);
             navigate('/admin'); // Redirect ke halaman utama atau halaman yang diinginkan
         } catch (error) {
             console.error('Error updating the tour:', error);
