@@ -18,33 +18,34 @@ const LoginAdmin = () => {
   };
 
   const handleSubmit = async e => {
-    e.preventDefault();
-    dispatch({ type: 'ADMIN_LOGIN_START' });
+  e.preventDefault();
+  dispatch({ type: 'ADMIN_LOGIN_START' });
 
-    try {
-      // Ganti fetch ke axios untuk kemudahan
-      const res = await axios.post(`${BASE_URL}/auth/loginAdmin`, credentials);
-      // Misal API merespons: { data: { user: {...}, token: 'xxx.yyy.zzz' } }
-      const { user, token: adminToken } = res.data.data;
+  try {
+    const res = await axios.post(`${BASE_URL}/auth/loginAdmin`, credentials, { withCredentials: true });
+    console.log('Login response:', res.data);
 
-      if (!adminToken) {
-        throw new Error('Token tidak ditemukan di response');
-      }
+    const adminToken = res.data.accessToken
+      || res.data.token
+      || res.data.data?.token
+      || res.data.data?.accessToken;
 
-      // Dispatch ke Context: Context yang akan simpan ke localStorage
-      dispatch({
-        type: 'ADMIN_LOGIN_SUCCESS',
-        payload: { user, token: adminToken }
-      });
-
-      // Redirect setelah login sukses
-      navigate('/admin');
-    } catch (err) {
-      // Ambil pesan error yang relevan
-      const msg = err.response?.data?.message || err.message;
-      dispatch({ type: 'ADMIN_LOGIN_FAILURE', payload: msg });
+    if (!adminToken) {
+      throw new Error('Token tidak ditemukan di response');
     }
-  };
+
+    dispatch({
+      type: 'ADMIN_LOGIN_SUCCESS',
+      payload: { user: res.data.data?.user || res.data.data, token: adminToken }
+    });
+
+    navigate('/admin');
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message;
+    dispatch({ type: 'ADMIN_LOGIN_FAILURE', payload: msg });
+    alert('Login gagal: ' + msg);
+  }
+};
 
   return (
     <section className="login-section">
