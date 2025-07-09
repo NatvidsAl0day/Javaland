@@ -17,48 +17,52 @@ const LoginAdmin = () => {
     setCredentials(prev => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
-  const handleClick = async e => {
-    e.preventDefault();
-    dispatch({ type: 'ADMIN_LOGIN_START' });
+ const handleClick = async e => {
+  e.preventDefault();
+  dispatch({ type: 'ADMIN_LOGIN_START' });
 
-    try {
-      const res = await fetch(`${BASE_URL}/auth/loginAdmin`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(credentials),
-      });
+  try {
+    const res = await fetch(`${BASE_URL}/auth/loginAdmin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(credentials),
+    });
 
-      const result = await res.json();
-      if (!res.ok) {
-        dispatch({ type: 'ADMIN_LOGIN_FAILURE', payload: result.message });
-        alert(result.message);
-        return;
-      }
+    const result = await res.json();
+    console.log('[LoginAdmin] raw result:', result);
 
-      // Ambil token dari response
-      const adminToken = result.token;
-      // Simpan ke localStorage
-      localStorage.setItem('token_admin', adminToken);
-      // Update context: simpan admin data dan token
-      dispatch({
-        type: 'ADMIN_LOGIN_SUCCESS',
-        payload: { admin: result.data, token: adminToken }
-      });
-
-      // Tampilkan token di UI
-      setShowToken(true);
-
-      // Redirect setelah beberapa detik (misal 1 detik)
-      setTimeout(() => {
-        navigate('/admin');
-      }, 1000);
-
-    } catch (err) {
-      dispatch({ type: 'ADMIN_LOGIN_FAILURE', payload: err.message });
-      alert('Login gagal: ' + err.message);
+    if (!res.ok) {
+      dispatch({ type: 'ADMIN_LOGIN_FAILURE', payload: result.message });
+      alert(result.message);
+      return;
     }
-  };
+
+    // Perbaikan: cek dimana token itu berada
+    // Kadang backend mengemas token di result.token, kadang di result.data.token
+    const adminToken = result.token ?? result.data?.token;
+    console.log('[LoginAdmin] extracted token:', adminToken);
+
+    if (!adminToken) {
+      throw new Error('Token tidak ditemukan di response');
+    }
+
+    // Simpan ke localStorage
+    localStorage.setItem('token_admin', adminToken);
+
+    dispatch({
+      type: 'ADMIN_LOGIN_SUCCESS',
+      payload: { admin: result.data, token: adminToken }
+    });
+
+    setShowToken(true);
+    setTimeout(() => navigate('/admin'), 1000);
+  } catch (err) {
+    console.error('[LoginAdmin] error:', err);
+    dispatch({ type: 'ADMIN_LOGIN_FAILURE', payload: err.message });
+    alert('Login gagal: ' + err.message);
+  }
+};
 
   return (
     <section>
