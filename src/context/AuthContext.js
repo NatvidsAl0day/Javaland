@@ -1,8 +1,9 @@
-import { createContext, useReducer } from 'react';
+// src/context/AuthContext.js
+import React, { createContext, useReducer, useEffect } from 'react';
 
 const INITIAL_STATE = {
-  user: null,
-  token: null,
+  user: JSON.parse(localStorage.getItem('user')) || null,
+  token: localStorage.getItem('token') || null,
   loading: false,
   error: null
 };
@@ -33,9 +34,19 @@ const authReducer = (state, action) => {
   }
 };
 
-// Ubah nama AuthProvider menjadi AuthContextProvider agar sesuai import di root
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, INITIAL_STATE);
+
+  // Sync ke localStorage saat user/token berubah
+  useEffect(() => {
+    if (state.user && state.token) {
+      localStorage.setItem('user', JSON.stringify(state.user));
+      localStorage.setItem('token', state.token);
+    } else {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+    }
+  }, [state.user, state.token]);
 
   return (
     <AuthContext.Provider value={{ ...state, dispatch }}>
