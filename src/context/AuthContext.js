@@ -33,7 +33,8 @@ const authReducer = (state, action) => {
   }
 };
 
-export const AuthProvider = ({ children }) => {
+// Ubah nama AuthProvider menjadi AuthContextProvider agar sesuai import di root
+export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, INITIAL_STATE);
 
   return (
