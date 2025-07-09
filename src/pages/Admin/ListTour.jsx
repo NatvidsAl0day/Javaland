@@ -12,7 +12,7 @@ const ListTour = () => {
 
     const getTours = async () => {
         try {
-            const response = await axios.get("https://javaland-api.vercel.app/api/v1/tours/allout/out");
+            const response = await axios.get("https://javaland-api.vercel.app/api/v1/tours/allout");
             console.log(response.data); // Log respons API untuk memeriksa struktur data
             if (response.data && Array.isArray(response.data.data)) {
                 setTours(response.data.data);
