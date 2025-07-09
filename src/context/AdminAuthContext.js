@@ -1,8 +1,8 @@
 import React, { createContext, useEffect, useReducer } from "react";
 
 const initial_state = {
-  admin: JSON.parse(localStorage.getItem('admin')) || null,        // user info
-  token: localStorage.getItem('token_admin') || null,              // JWT
+  admin: JSON.parse(localStorage.getItem('admin')) || null,
+  token: localStorage.getItem('token_admin') || null,
   loading: false,
   error: null,
 };
@@ -12,13 +12,9 @@ export const AdminAuthContext = createContext(initial_state);
 const AdminAuthReducer = (state, action) => {
   switch (action.type) {
     case 'ADMIN_LOGIN_START':
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
+      return { ...state, loading: true, error: null };
     case 'ADMIN_LOGIN_SUCCESS':
-      // action.payload = { user: {…}, token: "xxx.yyy.zzz" }
+      // payload = { user: {...}, token: '...' }
       return {
         admin: action.payload.user,
         token: action.payload.token,
@@ -26,19 +22,9 @@ const AdminAuthReducer = (state, action) => {
         error: null,
       };
     case 'ADMIN_LOGIN_FAILURE':
-      return {
-        admin: null,
-        token: null,
-        loading: false,
-        error: action.payload,
-      };
+      return { admin: null, token: null, loading: false, error: action.payload };
     case 'ADMIN_LOGOUT':
-      return {
-        admin: null,
-        token: null,
-        loading: false,
-        error: null,
-      };
+      return { admin: null, token: null, loading: false, error: null };
     default:
       return state;
   }
@@ -47,17 +33,13 @@ const AdminAuthReducer = (state, action) => {
 export const AdminAuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AdminAuthReducer, initial_state);
 
-  // Sync to localStorage whenever admin or token changes
+  // sync to localStorage
   useEffect(() => {
     if (state.admin) {
       localStorage.setItem('admin', JSON.stringify(state.admin));
-    } else {
-      localStorage.removeItem('admin');
-    }
-
-    if (state.token) {
       localStorage.setItem('token_admin', state.token);
     } else {
+      localStorage.removeItem('admin');
       localStorage.removeItem('token_admin');
     }
   }, [state.admin, state.token]);
