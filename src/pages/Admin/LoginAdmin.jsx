@@ -72,3 +72,5 @@ const LoginAdmin = () => {
     </section>
   );
 };
+
+export default LoginAdmin;
