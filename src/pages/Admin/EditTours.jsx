@@ -10,14 +10,16 @@ const EditTours = () => {
   const navigate = useNavigate();
   const { token } = useContext(AdminAuthContext);
 
-  const [tour, setTour] = useState({ title: '', city: '', address: '', distance: '', photo: '', desc: '', price: '', maxGroupSize: '' });
+  const [tour, setTour] = useState({
+    title: '', city: '', address: '', distance: '', photo: '', desc: '', price: '', maxGroupSize: ''
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get(`${BASE_URL}/tours/${id}`);
-        setTour(data.data);
+        const res = await axios.get(`${BASE_URL}/tours/${id}`);
+        setTour(res.data.data);
       } catch (err) {
         console.error('Fetch tour error:', err);
       }
@@ -34,9 +36,7 @@ const EditTours = () => {
     setLoading(true);
     try {
       if (!token) throw new Error('Anda belum login.');
-      await axios.put(`${BASE_URL}/tours/${id}`, tour, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.put(`${BASE_URL}/tours/${id}`, tour, { headers: { Authorization: `Bearer ${token}` } });
       navigate('/admin');
     } catch (err) {
       console.error('Update tour error:', err);
@@ -55,135 +55,63 @@ const EditTours = () => {
           <form onSubmit={handleSubmit}>
             {/* Title & City */}
             <div className="columns">
-              <div className="column">
-                <div className="field">
-                  <label className="label">Title</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="text"
-                      name="title"
-                      value={tour.title}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+              <div className="column field">
+                <label className="label">Title</label>
+                <div className="control">
+                  <input className="input" type="text" name="title" value={tour.title} onChange={handleChange} required />
                 </div>
               </div>
-              <div className="column">
-                <div className="field">
-                  <label className="label">City</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="text"
-                      name="city"
-                      value={tour.city}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+              <div className="column field">
+                <label className="label">City</label>
+                <div className="control">
+                  <input className="input" type="text" name="city" value={tour.city} onChange={handleChange} required />
                 </div>
               </div>
             </div>
-
             {/* Address */}
             <div className="field">
               <label className="label">Address</label>
               <div className="control">
-                <input
-                  className="input"
-                  type="text"
-                  name="address"
-                  value={tour.address}
-                  onChange={handleChange}
-                  required
-                />
+                <input className="input" type="text" name="address" value={tour.address} onChange={handleChange} required />
               </div>
             </div>
-
             {/* Distance & Photo */}
             <div className="columns">
-              <div className="column">
-                <div className="field">
-                  <label className="label">Distance (km)</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="number"
-                      name="distance"
-                      value={tour.distance}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+              <div className="column field">
+                <label className="label">Distance (km)</label>
+                <div className="control">
+                  <input className="input" type="number" name="distance" value={tour.distance} onChange={handleChange} required />
                 </div>
               </div>
-              <div className="column">
-                <div className="field">
-                  <label className="label">Photo URL</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="url"
-                      name="photo"
-                      value={tour.photo}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+              <div className="column field">
+                <label className="label">Photo URL</label>
+                <div className="control">
+                  <input className="input" type="url" name="photo" value={tour.photo} onChange={handleChange} required />
                 </div>
               </div>
             </div>
-
             {/* Description */}
             <div className="field">
               <label className="label">Description</label>
               <div className="control">
-                <textarea
-                  className="textarea"
-                  name="desc"
-                  value={tour.desc}
-                  onChange={handleChange}
-                  required
-                />
+                <textarea className="textarea" name="desc" value={tour.desc} onChange={handleChange} required />
               </div>
             </div>
-
-            {/* Price & Max Group Size */}
+            {/* Price & Group Size */}
             <div className="columns">
-              <div className="column">
-                <div className="field">
-                  <label className="label">Price (IDR)</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="number"
-                      name="price"
-                      value={tour.price}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+              <div className="column field">
+                <label className="label">Price (IDR)</label>
+                <div className="control">
+                  <input className="input" type="number" name="price" value={tour.price} onChange={handleChange} required />
                 </div>
               </div>
-              <div className="column">
-                <div className="field">
-                  <label className="label">Max Group Size</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="number"
-                      name="maxGroupSize"
-                      value={tour.maxGroupSize}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+              <div className="column field">
+                <label className="label">Max Group Size</label>
+                <div className="control">
+                  <input className="input" type="number" name="maxGroupSize" value={tour.maxGroupSize} onChange={handleChange} required />
                 </div>
               </div>
             </div>
-
             <div className="field">
               <div className="control">
                 <button className={`button is-primary is-fullwidth ${loading ? 'is-loading' : ''}`} type="submit">
