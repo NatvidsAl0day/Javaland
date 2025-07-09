@@ -12,7 +12,7 @@ const ListTour = () => {
 
     const getTours = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/v1/tours/allout/out");
+            const response = await axios.get("https://javaland-api.vercel.app/api/v1/tours/allout/out");
             console.log(response.data); // Log respons API untuk memeriksa struktur data
             if (response.data && Array.isArray(response.data.data)) {
                 setTours(response.data.data);
@@ -26,7 +26,7 @@ const ListTour = () => {
 
     const deleteTours = async (id) => {
         try {
-            await axios.delete(`http://localhost:4000/api/v1/tours/${id}`);
+            await axios.delete(`https://javaland-api.vercel.app/api/v1/tours/${id}`);
             getTours();
         } catch (error) {
             console.error("Error deleting the tours data:", error);
