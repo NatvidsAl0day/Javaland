@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './editform.css';
-import { BASE_URL } from '../utils/config';
+import { BASE_URL } from '../../utils/config';
 import { AdminAuthContext } from '../context/AdminAuthContext'; // <- tambahkan ini
 
 const EditTours = () => {
