@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './editform.css';
 import { BASE_URL } from '../../utils/config';
-import { AdminAuthContext } from '../context/AdminAuthContext'; // <- tambahkan ini
+import { AdminAuthContext } from '../../context/AdminAuthContext'; // <- tambahkan ini
 
 const EditTours = () => {
   const { id } = useParams();
