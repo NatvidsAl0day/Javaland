@@ -1,0 +1,111 @@
+.booking {
+    padding: 2rem;
+    border-radius: .5rem;
+    border: 1px solid rgb(229, 231, 235);
+    position: sticky;
+    top: 80px;
+}
+
+.booking__top h3{
+    font-size: 1.8rem;
+    font-weight: 700;
+
+}
+
+.booking__top h3 span {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: grey;
+}
+
+.booking__top span {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: grey;
+}
+
+.booking__top span i {
+    color: orange;
+}
+
+.booking__top {
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgb(229, 231, 235);
+}
+
+.booking__form {
+    padding-top: 2rem;
+}
+
+.booking__form h5{
+    margin-bottom: 1rem;
+}
+
+.booking__form input {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: .5rem;
+    color: black;
+    font-size: 1rem;
+    border: none;
+    border-bottom: 1px solid rgb(229, 231, 235);
+    
+}
+
+.booking__form input:focus {
+    outline: none;
+}
+
+.booking__info-form {
+    padding: 1rem;
+    padding-right: 2rem;
+    border: 1px solid rgb(229, 231, 235);
+}
+
+.btn__book {
+    display: inline-block;
+    padding: 10px 40px;
+    border: none;
+    border-radius: 50px; /* Membuat tombol berbentuk bulat */
+    cursor: pointer;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    outline: none;
+    background: red;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn__book:hover {
+    color: red;
+    background: black;
+}
+
+/* .btnprim {
+    background: orange;
+    color: orange;
+} */
+
+.booking__bottom li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.booking__bottom li h5, .booking__bottom li span {
+    font-size: 1rem;
+    color: grey;
+    font-weight: 500;
+}
+
+.booking__bottom {
+    margin-top: 1.5rem;
+}
+
+.total h5, .total span{
+    color: black !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem;
+}
+

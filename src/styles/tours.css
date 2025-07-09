@@ -1,0 +1,29 @@
+.sec__1 {
+    margin-bottom: 80px;
+
+}
+
+.header_tour {
+    margin-bottom: 6rem;
+}
+
+.pagination span{
+    width: 2rem;
+    height: 2rem;
+    padding: 5px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid orange;
+    color: black;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-bottom: 40px;
+    font-weight: 700;
+}
+
+.active__page {
+    background: orange;
+    color: white !important;
+}

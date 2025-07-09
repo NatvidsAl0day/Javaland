@@ -1,0 +1,8 @@
+.container__ftr {
+    display: flex;
+    flex-wrap: wrap; /* Memungkinkan pemutaran elemen ke baris baru */
+    justify-content: space-between; /* Menyusun elemen sejajar dan meratakan jarak di antara mereka */
+    margin-left: 5px;
+}
+
+

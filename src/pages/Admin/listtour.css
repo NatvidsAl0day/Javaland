@@ -1,0 +1,53 @@
+/* Tambahkan ini ke dalam file CSS Anda atau di dalam tag <style> di komponen Anda */
+.button {
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px; /* Membuat tombol rounded */
+    transition: transform 0.2s, box-shadow 0.2s; /* Animasi transisi */
+}
+
+.button-edit {
+    background-color: #f0ad4e; /* Warna kuning */
+}
+
+.button-delete {
+    background-color: #d9534f; /* Warna merah */
+}
+
+/* Efek saat kursor berada di atas tombol */
+.button:hover {
+    transform: scale(1.05); /* Membuat tombol sedikit lebih besar */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Membuat tombol timbul atau menonjol */
+}
+
+.box {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.button.is-primary {
+    background-color: #3273dc;
+    border-color: transparent;
+}
+
+.button.is-primary:hover {
+    background-color: #276cda;
+}
+
+.field:not(:last-child) {
+    margin-bottom: 1rem;
+}
