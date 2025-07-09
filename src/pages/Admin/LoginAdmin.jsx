@@ -1,75 +1,57 @@
 import React, { useState, useContext } from 'react';
-import { Container, Row, Col, Form, FormGroup, Button } from 'reactstrap';
+import { Container, Row, Col, Form, FormGroup, Button, Spinner, Alert } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import './loginadmin.css';
 import loginImg from '../../assets/images/adminLogs.jpg';
 import userIcon from '../../assets/images/user.png';
 import { AdminAuthContext } from '../../context/AdminAuthContext';
 import { BASE_URL } from '../../utils/config';
+import axios from 'axios';
 
 const LoginAdmin = () => {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
-  const { admin, token_admin, dispatch } = useContext(AdminAuthContext);
+  const { admin, token, loading, error, dispatch } = useContext(AdminAuthContext);
   const navigate = useNavigate();
-  const [showToken, setShowToken] = useState(false);
 
   const handleChange = e => {
     setCredentials(prev => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
- const handleClick = async e => {
-  e.preventDefault();
-  dispatch({ type: 'ADMIN_LOGIN_START' });
+  const handleSubmit = async e => {
+    e.preventDefault();
+    dispatch({ type: 'ADMIN_LOGIN_START' });
 
-  try {
-    const res = await fetch(`${BASE_URL}/auth/loginAdmin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(credentials),
-    });
+    try {
+      // Ganti fetch ke axios untuk kemudahan
+      const res = await axios.post(`${BASE_URL}/auth/loginAdmin`, credentials);
+      // Misal API merespons: { data: { user: {...}, token: 'xxx.yyy.zzz' } }
+      const { user, token: adminToken } = res.data.data;
 
-    const result = await res.json();
-    console.log('[LoginAdmin] raw result:', result);
+      if (!adminToken) {
+        throw new Error('Token tidak ditemukan di response');
+      }
 
-    if (!res.ok) {
-      dispatch({ type: 'ADMIN_LOGIN_FAILURE', payload: result.message });
-      alert(result.message);
-      return;
+      // Dispatch ke Context: Context yang akan simpan ke localStorage
+      dispatch({
+        type: 'ADMIN_LOGIN_SUCCESS',
+        payload: { user, token: adminToken }
+      });
+
+      // Redirect setelah login sukses
+      navigate('/admin');
+    } catch (err) {
+      // Ambil pesan error yang relevan
+      const msg = err.response?.data?.message || err.message;
+      dispatch({ type: 'ADMIN_LOGIN_FAILURE', payload: msg });
     }
-
-    // Perbaikan: cek dimana token itu berada
-    // Kadang backend mengemas token di result.token, kadang di result.data.token
-    const adminToken = result.token ?? result.data?.token;
-    console.log('[LoginAdmin] extracted token:', adminToken);
-
-    if (!adminToken) {
-      throw new Error('Token tidak ditemukan di response');
-    }
-
-    // Simpan ke localStorage
-    localStorage.setItem('token_admin', adminToken);
-
-    dispatch({
-      type: 'ADMIN_LOGIN_SUCCESS',
-      payload: { admin: result.data, token: adminToken }
-    });
-
-    setShowToken(true);
-    setTimeout(() => navigate('/admin'), 1000);
-  } catch (err) {
-    console.error('[LoginAdmin] error:', err);
-    dispatch({ type: 'ADMIN_LOGIN_FAILURE', payload: err.message });
-    alert('Login gagal: ' + err.message);
-  }
-};
+  };
 
   return (
-    <section>
+    <section className="login-section">
       <Container>
         <Row>
           <Col lg="8" className="m-auto">
-            <div className="login__container1 d-flex justify-content-between">
+            <div className="login__container1 d-flex">
               <div className="login__img1">
                 <img src={loginImg} alt="Admin Login" />
               </div>
@@ -80,7 +62,10 @@ const LoginAdmin = () => {
                 </div>
                 <h2>Login Admin</h2>
 
-                <Form onSubmit={handleClick}>
+                {/* Tampilkan error jika ada */}
+                {error && <Alert color="danger">{error}</Alert>}
+
+                <Form onSubmit={handleSubmit}>
                   <FormGroup>
                     <input
                       type="email"
@@ -103,20 +88,17 @@ const LoginAdmin = () => {
                     />
                   </FormGroup>
 
-                  <Button className="btn1 secondary__btn auth__btn1" type="submit">
-                    Login
+                  <Button
+                    className="btn1 secondary__btn auth__btn1"
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading ? <Spinner size="sm" /> : 'Login'}
                   </Button>
                 </Form>
 
-                {showToken && (
-                  <div className="mt-3 p-2 border rounded">
-                    <strong>Token Admin:</strong>
-                    <p style={{ wordBreak: 'break-all' }}>{localStorage.getItem('token_admin')}</p>
-                  </div>
-                )}
-
                 <p className="mt-3">
-                  Get Lost? <Link to="/">Visitor</Link>
+                  Bukan admin? <Link to="/">Kembali ke Visitor</Link>
                 </p>
               </div>
             </div>
