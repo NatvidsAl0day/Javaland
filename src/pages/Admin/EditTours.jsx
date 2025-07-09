@@ -3,34 +3,23 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './editform.css';
 import { BASE_URL } from '../../utils/config';
-import { AdminAuthContext } from '../../context/AdminAuthContext'; // <- tambahkan ini
+import { AdminAuthContext } from '../../context/AdminAuthContext';
 
 const EditTours = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { admin } = useContext(AdminAuthContext); // <- gunakan context
-  const token = localStorage.getItem('token_admin'); // <- boleh backup, tapi utamanya pakai context bila tersedia
+  const { token } = useContext(AdminAuthContext);
 
-  const [tour, setTour] = useState({
-    title: '',
-    city: '',
-    address: '',
-    distance: '',
-    photo: '',
-    desc: '',
-    price: '',
-    maxGroupSize: '',
-  });
-
+  const [tour, setTour] = useState({ title: '', city: '', address: '', distance: '', photo: '', desc: '', price: '', maxGroupSize: '' });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/tours/${id}`);
-        setTour(res.data.data);
+        const { data } = await axios.get(`${BASE_URL}/tours/${id}`);
+        setTour(data.data);
       } catch (err) {
-        console.error('Gagal mengambil data tour:', err);
+        console.error('Fetch tour error:', err);
       }
     })();
   }, [id]);
@@ -43,20 +32,14 @@ const EditTours = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      if (!token) throw new Error('Token admin tidak ditemukan. Silakan login.');
-
+      if (!token) throw new Error('Anda belum login.');
       await axios.put(`${BASE_URL}/tours/${id}`, tour, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` }
       });
-
       navigate('/admin');
     } catch (err) {
-      console.error('Gagal memperbarui tour:', err);
+      console.error('Update tour error:', err);
       alert(err.response?.data?.message || err.message);
     } finally {
       setLoading(false);
@@ -64,59 +47,154 @@ const EditTours = () => {
   };
 
   return (
-    <div className="container">
-      <div className="columns is-centered">
-        <div className="column is-half">
-          <div className="box">
-            <h2 className="title has-text-centered">Edit Tour</h2>
-            <p className="subtitle has-text-centered">Update your tour details</p>
-            <form onSubmit={handleSubmit}>
-              {/* Title & City */}
-              <div className="columns">
-                <div className="column">
+    <section className="section">
+      <div className="container">
+        <div className="box">
+          <h1 className="title has-text-centered">Edit Tour</h1>
+          <h2 className="subtitle has-text-centered">Update your tour details</h2>
+          <form onSubmit={handleSubmit}>
+            {/* Title & City */}
+            <div className="columns">
+              <div className="column">
+                <div className="field">
                   <label className="label">Title</label>
-                  <input className="input" type="text" name="title" value={tour.title} onChange={handleChange} required />
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="text"
+                      name="title"
+                      value={tour.title}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
                 </div>
-                <div className="column">
+              </div>
+              <div className="column">
+                <div className="field">
                   <label className="label">City</label>
-                  <input className="input" type="text" name="city" value={tour.city} onChange={handleChange} required />
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="text"
+                      name="city"
+                      value={tour.city}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
+            </div>
 
-              {/* Address, Distance, Photo */}
+            {/* Address */}
+            <div className="field">
               <label className="label">Address</label>
-              <input className="input mb-3" type="text" name="address" value={tour.address} onChange={handleChange} required />
+              <div className="control">
+                <input
+                  className="input"
+                  type="text"
+                  name="address"
+                  value={tour.address}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
 
-              <label className="label">Distance</label>
-              <input className="input mb-3" type="text" name="distance" value={tour.distance} onChange={handleChange} required />
-
-              <label className="label">Photo URL</label>
-              <input className="input mb-3" type="text" name="photo" value={tour.photo} onChange={handleChange} required />
-
-              {/* Description */}
-              <label className="label">Description</label>
-              <textarea className="textarea mb-3" name="desc" value={tour.desc} onChange={handleChange} required />
-
-              {/* Price & Max Group Size */}
-              <div className="columns">
-                <div className="column">
-                  <label className="label">Price</label>
-                  <input className="input" type="number" name="price" value={tour.price} onChange={handleChange} required />
-                </div>
-                <div className="column">
-                  <label className="label">Max Group Size</label>
-                  <input className="input" type="number" name="maxGroupSize" value={tour.maxGroupSize} onChange={handleChange} required />
+            {/* Distance & Photo */}
+            <div className="columns">
+              <div className="column">
+                <div className="field">
+                  <label className="label">Distance (km)</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="number"
+                      name="distance"
+                      value={tour.distance}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
+              <div className="column">
+                <div className="field">
+                  <label className="label">Photo URL</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="url"
+                      name="photo"
+                      value={tour.photo}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
 
-              <button className={`button is-primary is-fullwidth ${loading ? 'is-loading' : ''}`} type="submit">
-                Save Changes
-              </button>
-            </form>
-          </div>
+            {/* Description */}
+            <div className="field">
+              <label className="label">Description</label>
+              <div className="control">
+                <textarea
+                  className="textarea"
+                  name="desc"
+                  value={tour.desc}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Price & Max Group Size */}
+            <div className="columns">
+              <div className="column">
+                <div className="field">
+                  <label className="label">Price (IDR)</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="number"
+                      name="price"
+                      value={tour.price}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="column">
+                <div className="field">
+                  <label className="label">Max Group Size</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="number"
+                      name="maxGroupSize"
+                      value={tour.maxGroupSize}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="field">
+              <div className="control">
+                <button className={`button is-primary is-fullwidth ${loading ? 'is-loading' : ''}`} type="submit">
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
